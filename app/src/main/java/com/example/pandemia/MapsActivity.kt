@@ -67,7 +67,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     fun showDeaths(view: View){
         mMap.clear()
         val sortedDeaths = data.sortedByDescending { it.defunciones }
-        Log.i("sortedDeaths", "Total lista: ${sortedDeaths.size}, ${sortedDeaths.size-10}")
+        //Log.i("sortedList", "Total lista: ${sortedDeaths.size}, ${sortedDeaths.size-10}")
         val top = sortedDeaths.dropLast(sortedDeaths.size - 10)
 
         for (pais in top){
@@ -85,7 +85,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     fun showCases(view: View){
         mMap.clear()
         val sortedCases = data.sortedByDescending { it.casos }
-        Log.i("sortedCases", "Total lista: ${sortedCases.size}, ${sortedCases.size-10}")
+        //Log.i("sortedList", "Total lista: ${sortedCases.size}, ${sortedCases.size-10}")
         val top = sortedCases.dropLast(sortedCases.size - 10)
 
         for (pais in top){
@@ -103,7 +103,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     fun showTests(view: View){
         mMap.clear()
         val sortedTests = data.sortedByDescending { it.tests }
-        Log.i("sortedCases", "Total lista: ${sortedTests.size}, ${sortedTests.size-10}")
+        //Log.i("sortedList", "Total lista: ${sortedTests.size}, ${sortedTests.size-10}")
         val top = sortedTests.dropLast(sortedTests.size - 10)
 
         for (pais in top){
