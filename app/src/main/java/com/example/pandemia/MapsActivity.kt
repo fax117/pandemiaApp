@@ -1,10 +1,11 @@
-package com.example.pandemia
+ package com.example.pandemia
 
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonArrayRequest
@@ -14,6 +15,12 @@ import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.gson.Gson
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -29,6 +36,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
         cargaDatos()
+        getContries()
+        getContinents()
     }
 
     /**
@@ -52,14 +61,37 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     fun viewData(view: View){
+
         mMap.clear()
-        for (pais in data ){
+        /*for (pais in data ){
             mMap.addMarker(
                     MarkerOptions()
                             .position(LatLng(pais.latitude, pais.longitude))
                             .title(pais.nombre)
                             .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN))
                             //.icon(BitmapDescriptorFactory.fromAsset("arrow.xml"))
+            )
+        }*/
+        for (pais in paisesGson ){
+            mMap.addMarker(
+                MarkerOptions()
+                    .position(LatLng(pais.countryInfo.lat?:0.0, pais.countryInfo.long?:0.0))
+                    .title(pais.nombre)
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN))
+                //.icon(BitmapDescriptorFactory.fromAsset("arrow.xml"))
+            )
+        }
+    }
+
+    fun showContinents(view: View){
+        mMap.clear()
+        for (contient in continentsGson ){
+            mMap.addMarker(
+                    MarkerOptions()
+                            .position(LatLng(contient.continentInfo.lat?:0.0, contient.continentInfo.long?:0.0))
+                            .title("${contient.nombre},  Tests: ${contient.tests}")
+                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET))
+                    //.icon(BitmapDescriptorFactory.fromAsset("arrow.xml"))
             )
         }
     }
@@ -94,7 +126,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                             .position(LatLng(pais.latitude, pais.longitude))
                             .title("${pais.nombre}, casos: ${pais.casos}")
                             .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW))
-                    //.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_launcher_foreground))
+                            //.icon(BitmapDescriptorFactory.fromResource(R.drawable.arrow))
 
             )
         }
@@ -120,7 +152,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private val data = mutableListOf<Pais>()
 
-
+    // Volley
     fun cargaDatos(){
         val requestQueue = Volley.newRequestQueue(this)
         val peticion = JsonArrayRequest(Request.Method.GET, url, null, Response.Listener {
@@ -145,5 +177,46 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         })
         requestQueue.add(peticion)
+    }
+
+    private fun getRetrofit():Retrofit{
+        return Retrofit.Builder()
+                .baseUrl("https://disease.sh/v3/covid-19/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+    }
+
+    private lateinit var paisesGson: ArrayList<PaisJson>
+    private fun getContries(){
+        val call = getRetrofit().create(APIService::class.java)
+
+        CoroutineScope(Dispatchers.IO).launch {
+            val response = call.getCountries()
+            runOnUiThread {
+                paisesGson = response.body() as ArrayList<PaisJson>
+                if (response.isSuccessful){
+                    Toast.makeText(applicationContext, "Datos obtenidos", Toast.LENGTH_LONG).show()
+                } else{
+                    Toast.makeText(applicationContext, "Error!", Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+    }
+
+    private lateinit var continentsGson: ArrayList<ContinenteGson>
+    private fun getContinents(){
+        val call = getRetrofit().create(APIService::class.java)
+
+        CoroutineScope(Dispatchers.IO).launch {
+            val response = call.getContinents()
+            runOnUiThread {
+                continentsGson = response.body() as ArrayList<ContinenteGson>
+                if (response.isSuccessful){
+                    Toast.makeText(applicationContext, "Continentes obtenidos", Toast.LENGTH_LONG).show()
+                } else{
+                    Toast.makeText(applicationContext, "Error!", Toast.LENGTH_LONG).show()
+                }
+            }
+        }
     }
 }

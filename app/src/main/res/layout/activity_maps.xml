@@ -26,7 +26,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="365dp" />
+        app:layout_constraintGuide_begin="436dp" />
 
     <Button
         android:id="@+id/button"
@@ -40,7 +40,7 @@
         app:layout_constraintHorizontal_bias="0.065"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.186" />
+        app:layout_constraintVertical_bias="0.095" />
 
     <Button
         android:id="@+id/button2"
@@ -54,7 +54,7 @@
         app:layout_constraintHorizontal_bias="0.058"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.391" />
+        app:layout_constraintVertical_bias="0.288" />
 
     <Button
         android:id="@+id/button3"
@@ -68,7 +68,7 @@
         app:layout_constraintHorizontal_bias="0.071"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.81" />
+        app:layout_constraintVertical_bias="0.703" />
 
     <Button
         android:id="@+id/button4"
@@ -82,5 +82,18 @@
         app:layout_constraintHorizontal_bias="0.054"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.608" />
+        app:layout_constraintVertical_bias="0.494" />
+
+    <Button
+        android:id="@+id/button5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="showContinents"
+        android:text="Show Continents"
+        app:layout_constraintBottom_toTopOf="@+id/guideline2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.068"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button3"
+        app:layout_constraintVertical_bias="0.449" />
 </androidx.constraintlayout.widget.ConstraintLayout>
